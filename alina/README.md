@@ -27,15 +27,18 @@
 sudo groupadd senior
  ## Устанавливаю группу-владельца для папки
   Устанавливаю права на папки кроме work, 7 rwx ( удалять/создавать/редактировать/читать), 5 r-x (чтение и открытие, редактирование недоступно)
- sudo chmod -R 775 fastafiles/mRNA fastafiles/protein fastafiles/sequence
+ `sudo chmod -R 775 fastafiles/mRNA fastafiles/protein fastafiles/sequence`
  ## Специальные условия для папки work, 1 отвечает за sticky bit
- sudo chmod 1777 fastafiles/work
-sudo chgrp -R senior fastafiles
-Далее с помощью  Split Разделяю файлы на отдельные фаста файлы, используя в качестве разделителя строки с >
+ `sudo chmod 1777 fastafiles/work`
+`sudo chgrp -R senior fastafiles`
+## Далее с помощью  csplit pазделяю файлы на отдельные фаста файлы, используя в качестве разделителя строки с >
+`csplit -z -f fasta_ -b %03d.fa dump.fasta '/^>/' '{*}' `
 ## Смогла только сделать отдельные конвееры 
-for file in fasta_*.fa; do     if head -n1 "$file" | grep -qiE "protein"; then         mv "$file" protein/;     fi; done
+```for file in fasta_*.fa; do     if head -n1 "$file" | grep -qiE "protein"; then         mv "$file" protein/;     fi; done```
+```for file in fasta_*.fa; do     if head -n1 "$file" | grep -qiE "mRNA"; then         mv "$file" mRNA/;     fi; done```
+```for file in fasta_*.fa; do     if head -n1 "$file" | grep -qiE "complete|genome|sequence"; then         mv "$file" reference/;     fi; done```
 ## Сжимаю файлы в gz
-find . -name "*.fasta" -exec gzip {} \;
+`find . -name "*.fasta" -exec gzip {} \;`
  ____________________________________
 / ура первое задание \
 \ все!                            /
